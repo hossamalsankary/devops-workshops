@@ -1,5 +1,5 @@
 
-# Quick Start Ansible Workshop  
+#  Ansible Workshop  
 
 ## 0 · Lab Prep (5 min)
 
