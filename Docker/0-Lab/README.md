@@ -1,19 +1,17 @@
+
+
+
 ### 🎯 Objectives
 
-| Concept | Why it’s important |
-
-|---------|-------------------|
-
-| Images vs. containers | 
-Immutable artefact vs. running instance |
-
-| Container lifecycle | `create / start / stop / rm` |
-
-| Basic inspection | Debugging & automation rely on `docker inspect` |
-
-  
 
 ### 📝 Steps
+
+## instll docker 
+
+```bash 
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh ./get-docker.sh --dry-run
+```
 
 ```bash
 
@@ -54,6 +52,10 @@ docker inspect web | jq '.[0].NetworkSettings.IPAddress'
 
 
 
+```diff 
+docker run -d --name api --memory=512m --memory-swap=1g     --memory-reservation=256m        --cpus="1.5"       myimage:latest
+
+```
 
 # 5️⃣ Clean‑up
 
