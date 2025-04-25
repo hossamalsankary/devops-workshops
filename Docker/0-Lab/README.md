@@ -1,4 +1,26 @@
 
+# 🐳 Docker Hands‑On Labs  
+**Topics:** Core Components • Networking • Storage • Images • Registries  
+
+---
+
+## 📑 Command Cheat‑Sheet
+
+| Command | What it does |
+|---------|--------------|
+| `docker ps [-a]` | List running (**or all**) containers |
+| `docker images` | List local images |
+| `docker pull <image>` / `docker push <image>` | Download / upload image to a registry |
+| `docker run -d --name <c>` | Start a container in detached mode |
+| `docker exec -it <c> <cmd>` | Run interactive command inside a container |
+| `docker build -t <img>:tag .` | Build image from `Dockerfile` |
+| `docker network create <net>` | Create user‑defined network |
+| `docker volume create <vol>` | Create named volume |
+| `docker inspect <object>` | Low‑level details (JSON) |
+| `docker system prune` | Remove unused data |
+
+---
+
 
 
 ### 🎯 Objectives
