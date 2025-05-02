@@ -1,0 +1,9 @@
+---
+# simple_web/meta/main.yml
+galaxy_info:
+  author: Your Name
+  description: A simple role to install NGINX and deploy a landing page
+  company: Acme Corp
+  license: MIT
+  min_ansible_version: 2.9
+dependencies: []

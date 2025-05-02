@@ -1,0 +1,7 @@
+---
+# deploy_web.yml
+- name: Deploy simple web role demo
+  hosts: webservers
+  become: yes
+  roles:
+    - simple_web

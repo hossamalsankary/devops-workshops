@@ -1,0 +1,8 @@
+---
+# simple_web/defaults/main.yml
+nginx_pkg: nginx
+web_root: /var/www/html
+page_title: "Welcome to {{ inventory_hostname }}"
+owner: www-data
+group: www-data
+mode: "0644"
