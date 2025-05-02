@@ -9,7 +9,7 @@
 ---
 - name: Run NGINX and custom landing page
   hosts: servers
-  become: yes
+  become: true
   vars:
     page_title: "Hello from Ansible!"
   tasks:

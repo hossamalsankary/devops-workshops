@@ -1,23 +1,23 @@
 - name: reload nginx
-  become: yes
+  become: true
   service:
     name: nginx
     state: reloaded
 
 - name: restart nginx
-  become: yes
+  become: true
   service:
     name: nginx
     state: restarted
 
 - name: start nginx
-  become: yes
+  become: true
   service:
     name: nginx
     state: started
 
 - name: stop nginx
-  become: yes
+  become: true
   service:
     name: nginx
     state: stopped

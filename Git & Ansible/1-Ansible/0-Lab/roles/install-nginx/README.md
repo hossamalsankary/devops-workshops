@@ -63,7 +63,7 @@ To simply install Java:
 
   pre_tasks:
     - name: Update apt
-      become: yes
+      become: true
       apt:
         cache_valid_time: 1800
         update_cache: yes

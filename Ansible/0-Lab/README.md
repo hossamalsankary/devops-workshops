@@ -118,7 +118,7 @@ ansible -i inventory.ini servers -m ansible.builtin.command -a 'whoami' -b
 ---
 - name: Prepare single host with common tools
   hosts: servers
-  become: yes
+  become: true
   vars:
     common_packages:
       - curl
@@ -145,7 +145,7 @@ ansible -i inventory.ini servers -m ansible.builtin.command -a 'whoami' -b
 
 - name: Prepare single host with common tools 2
   hosts: servers2
-  become: yes
+  become: true
   vars:
     common_packages:
       - curl

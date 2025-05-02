@@ -16,7 +16,7 @@ All variables live in `defaults/main.yml`:
 Include in any playbook:
 ```yaml
 - hosts: webservers
-  become: yes
+  become: true
   roles:
     - simple_web
 ```
