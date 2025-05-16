@@ -1,0 +1,54 @@
+- name: Deploy Application to Staging
+  hosts: staging_servers
+  become: true
+  vars:
+    app_name: "nodejs-web-app"
+    image_name: "hossamalsankary/lap"
+    app_version: "{{ lookup('env', 'CI_PIPELINE_IID') | default('latest', true) }}"
+    docker_registry_user: "{{ lookup('env', 'DOCKER_REGISTRY_USER') }}"
+    docker_registry_password: "{{ lookup('env', 'DOCKER_REGISTRY_PASSWORD') }}"
+    container_port: 8080
+    host_port: 8080
+
+  tasks:
+
+    - name: Log into Docker registry
+      docker_login:
+        username: "{{ docker_registry_user }}"
+        password: "{{ docker_registry_password }}"
+        state: present
+
+    - name: Pull the application image
+      docker_image:
+        name: "{{ image_name }}:{{ app_version }}"
+        source: pull
+        force_source: yes
+
+    - name: Stop existing container
+      docker_container:
+        name: "{{ app_name }}"
+        state: absent
+
+    - name: Run application container
+      docker_container:
+        name: "{{ app_name }}"
+        image: "{{ image_name }}:{{ app_version }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ host_port }}:{{ container_port }}"
+        env:
+          NODE_ENV: staging
+
+    - name: Clean up old Docker images
+      docker_prune:
+        images: yes
+        images_filters:
+          dangling: true
+
+  handlers:
+    - name: restart application
+      docker_container:
+        name: "{{ app_name }}"
+        state: started
+        restart: yes

@@ -12,7 +12,32 @@ The pipeline in this workshop demonstrates a complete CI/CD workflow with the fo
 6. Deploying to production
 
 Let's examine each component in detail.
+## 0 · Lab Prep (5 min)
 
+### Your VM
+| Hostname | IP | User | Password |
+|---|---|---|---|
+| **workshop‑vm** | `192.168.56.20` | `workshop` | `P@ssw0rd!` |
+
+**Verify access**
+
+```bash
+ssh workshop@192.168.56.20
+# 1. Create the account and its home directory
+useradd -m -s /bin/bash devops
+
+# 2. Set an initial password (you'll be prompted to type it twice)
+passwd devops
+
+# 3. Add the user to the wheel group
+usermod -aG wheel devops
+
+# 4. (Optional) Make wheel group password‑less
+#    Uncomment or add this line in /etc/sudoers:
+#    devops ALL=(ALL) NOPASSWD: ALL
+visudo
+
+```
 ## Variables Section
 
 ```yaml
