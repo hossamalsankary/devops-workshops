@@ -198,3 +198,100 @@ production-deploy:
   when: manual
 ```
 
+### code
+```yaml 
+variables:
+  APP_NAME: "hossamalsankary/lap"
+  APP_VERSION: "${CI_PIPELINE_IID}"
+  DOCKER_REGISTRY_USER: "${DOCKER_REGISTRY_USER}"
+  DOCKER_REGISTRY_PASSWORD: "${DOCKER_REGISTRY_PASSWORD}"
+
+stages:
+  - install-build
+  - test
+  - vulnerabilities
+  - build-docker-job
+  - deploy
+  - Staging-deploy
+  - production
+
+cache:
+  key: "node-16-${CI_PROJECT_NAME}"
+  paths:
+    - node_modules/   
+  policy: pull-push    
+
+build-job:
+  stage: install-build
+  image: node:16-alpine
+  script:
+    - npm install
+
+
+test-job:
+  stage: test
+  image: node:16-alpine
+  script:
+    - npm run  test:unit
+  # artifacts:
+  #   paths:
+  #     - npm-audit.json
+  #   expire_in: 1 week
+
+vulnerabilities-job:
+  stage: vulnerabilities
+  image: node:16-alpine
+  script:
+    - npm audit || true  # Continue even if vulnerabilities are found
+  allow_failure: true
+  # artifacts:
+  #   paths:
+  #     - npm-audit.json
+  #   expire_in: 1 week
+
+build-docker-job:
+
+  image: docker:24.0.2  
+  stage: build-docker-job
+  services:
+    - docker:24.0.2-dind  
+  before_script:
+    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin
+  script:
+    - echo "Building Docker image..."
+    - docker info
+    - docker build -t $APP_NAME:$APP_VERSION .
+    - docker push $APP_NAME:$APP_VERSION
+  after_script:
+    - docker logout $DOCKER_REGISTRY
+
+
+
+
+Staging-deploy:
+  stage: Staging-deploy
+  image: willhallonline/ansible:2.15-alpine-3.18
+
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: "False"
+  script:
+    - echo "Deploying version $APP_VERSION to staging..."
+    - cd Ansbile/1-Lab/code
+    - ansible-playbook -i inventory.ini web-server.yaml 
+      -e "ansible_host=${STAGING_HOST}"
+      -e "ansible_user=${STAGING_HOST_USER}"
+      -e "ansible_password=${STAGING_HOST_PASSWORD}"
+      -e "app_version=$APP_VERSION" 
+      -e "docker_registry_user=$DOCKER_REGISTRY_USER" 
+      -e "docker_registry_password=$DOCKER_REGISTRY_PASSWORD"
+
+
+production-deploy:
+  stage: production
+  script:
+    - echo "Deploying $APP_NAME version $APP_VERSION to production"
+    - "for you"
+  only:
+    - main
+  when: manual
+```
