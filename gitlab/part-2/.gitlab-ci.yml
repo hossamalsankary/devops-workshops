@@ -1,0 +1,55 @@
+variables:
+  APP_NAME: "my-application"
+  APP_VERSION: "1.0.0"
+
+stages:
+  - build
+  - test
+  - security
+  - deploy
+  - production
+
+build-job:
+  stage: build
+  script:
+    - echo "Building $APP_NAME version $APP_VERSION"
+    - mkdir -p build/
+    - echo "Build artifact" > build/build.txt
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 week
+
+test-job:
+  stage: test
+  script:
+    - echo "Running tests for $APP_NAME"
+    - cat build/build.txt
+    - echo "Test results" > test-results.txt
+  artifacts:
+    paths:
+      - test-results.txt
+    expire_in: 1 week
+
+security-scan:
+  stage: security
+  script:
+    - echo "Running security scans..."
+    - echo "No vulnerabilities found"
+  allow_failure: true
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying $APP_NAME version $APP_VERSION to staging"
+    - cat build/build.txt
+    - cat test-results.txt
+    - echo "Staging deployment successful"
+
+production-deploy:
+  stage: production
+  script:
+    - echo "Deploying $APP_NAME version $APP_VERSION to production"
+  only:
+    - main
+  when: manual
