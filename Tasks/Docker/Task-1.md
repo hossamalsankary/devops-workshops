@@ -33,7 +33,7 @@ Create a Dockerfile that installs `curl` and runs a simple command.
     ```
     docker run --rm curl-test
     ```
-4. Observe the output in your terminal (HTML from Google)[1].
+4. Observe the output in your terminal (HTML from Google).
 
 ---
 
@@ -65,4 +65,4 @@ Create a Docker image that serves a static HTML page and map the container port 
     ```
     docker run -p 8080:80 static-site
     ```
-5. Open your browser and visit `http://localhost:8080` to see the page[1][2].
+5. Open your browser and visit `http://localhost:8080` to see the page.
