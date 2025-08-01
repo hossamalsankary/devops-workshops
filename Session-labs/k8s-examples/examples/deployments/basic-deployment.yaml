@@ -1,3 +1,24 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  database_url: "postgresql://localhost:5432/mydb"
+  log_level: "info"
+  config.properties: |
+    server.port=8080
+    server.name=my-app
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+type: Opaque
+data:
+  username: aG9zc2Ft # base64 encoded "admin"
+  password: MWYyZDFlMmU2N2Rm  # 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +26,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -16,6 +37,53 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.18
+        image: nginx
+        envFrom:
+        - configMapRef:
+            name: nginx-config
+
+        - secretRef:
+            name: app-secret
         ports:
         - containerPort: 80
+
+        volumeMounts:
+          - name: config-volume
+            mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+    - host:  
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port:
+                  number: 80

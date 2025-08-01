@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: every-thirty-seconds-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: thirty-second-job
+        image: ubuntu:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # This script runs the task every 30 seconds until manually terminated
+          while true; do
+            echo "Task running at: $(date)"
+            echo "Performing backup task..."
+            # Your actual task commands go here
+            
+            # Wait for 30 seconds before next execution
+            sleep 30
+          done
+      restartPolicy: OnFailure

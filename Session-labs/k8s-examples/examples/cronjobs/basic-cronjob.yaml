@@ -1,12 +1,47 @@
+# add pvc and pv for backup storage
+# This CronJob runs a database backup task every minute
+# Note: Kubernetes CronJob minimum interval is 1 minute, not seconds
+# For sub-minute scheduling, use a Job or Deployment with a sleep loop  
+
+# This example uses a PersistentVolume and PersistentVolumeClaim for backup storage
+# Ensure the PV and PVC are created before running this CronJob
+# The backup task will run every minute, simulating a 30-second interval by sleeping for
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/backup-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: database-backup
 spec:
   # Schedule in Cron format
-  # This runs at 3:00 AM every day
-  schedule: "0 3 * * *"
-  
+  # This runs every minute (closest possible to 30 seconds with standard cron)
+  # Note: Kubernetes CronJob minimum interval is 1 minute, not seconds
+  # For sub-minute scheduling, use a Job or Deployment with a sleep loop
+  schedule: "* * * * *"
   # Job template
   jobTemplate:
     spec:
@@ -14,11 +49,11 @@ spec:
         spec:
           containers:
           - name: backup-job
-            image: postgres:14
+            image: ubuntu:latest
             command:
             - /bin/sh
             - -c
-            - pg_dump -h db-host -U admin mydatabase > /backup/db-$(date +%Y%m%d).sql
+            - echo "connect to db to get backup" > /backup/db-$(date +%Y%m%d).sql
             volumeMounts:
             - name: backup-volume
               mountPath: /backup
@@ -37,6 +72,4 @@ spec:
   # Number of failed finished jobs to retain
   failedJobsHistoryLimit: 1
   
-  # Specifies how to treat concurrent executions of a job
-  # Options: Allow, Forbid, Replace
-  concurrencyPolicy: Forbid
+  #

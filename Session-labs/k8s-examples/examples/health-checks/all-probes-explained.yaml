@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: all-probes-explained
+  labels:
+    app: health-demo
+  annotations:
+    description: "Pod with all types of health probes fully explained"
+spec:
+  containers:
+  - name: web-app
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+      name: http
+    
+    # LIVENESS PROBE
+    # Purpose: Determines if a container is alive and running properly
+    # Effect: If it fails, the container will be RESTARTED
+    # Use case: Detect application deadlocks, memory leaks, or infinite loops
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http
+        httpHeaders:
+        - name: Custom-Header
+          value: Health-Check
+      initialDelaySeconds: 30  # Wait this long after container starts before first probe
+      periodSeconds: 10        # How often to perform the probe
+      timeoutSeconds: 5        # Probe timeout
+      failureThreshold: 3      # Number of consecutive failures before restarting
+      successThreshold: 1      # Min consecutive successes for the probe to be successful
+    
+    # READINESS PROBE
+    # Purpose: Determines if container is ready to accept traffic
+    # Effect: If it fails, the pod is REMOVED from service endpoints
+    # Use case: Check if application can process requests, dependencies are ready
+    readinessProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 5   # Start checking soon after container starts
+      periodSeconds: 5         # Check frequently
+      timeoutSeconds: 3
+      failureThreshold: 2
+      successThreshold: 1
+    
+    # STARTUP PROBE
+    # Purpose: Determines when application has fully started
+    # Effect: Disables liveness and readiness probes until it succeeds
+    # Use case: Applications with slow/variable startup time, prevents premature restarts
+    startupProbe:
+      exec:
+        command:
+        - cat
+        - /usr/share/nginx/html/index.html
+      failureThreshold: 30     # Allow up to 30 failures (30 * periodSeconds = max startup time)
+      periodSeconds: 10        # Check every 10 seconds
+      timeoutSeconds: 5
+      successThreshold: 1      # One success means startup is complete
+    
+    # Resource limits help Kubernetes schedule and manage the pod effectively
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "100m"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"

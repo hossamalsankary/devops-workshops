@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: app
-    image: myapp:1.0
+    image: nginx:alpine
     ports:
     - containerPort: 8080
     # Mount ConfigMap as volume

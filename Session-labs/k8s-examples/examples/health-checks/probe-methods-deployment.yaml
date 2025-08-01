@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe-methods-deployment
+  labels:
+    app: health-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: health-demo
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: health-demo
+    spec:
+      containers:
+      - name: web-app
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        
+        # 1. HTTP GET Probe Example
+        # Best for: Web applications, REST APIs
+        # Checks: If the HTTP endpoint returns 200-399 status code
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+            httpHeaders:
+            - name: Custom-Header
+              value: Health-Check
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          
+        # 2. TCP Socket Probe Example
+        # Best for: Database connections, caches, message brokers
+        # Checks: If a TCP connection can be established
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          
+        # 3. Exec Command Probe Example
+        # Best for: Checking specific conditions with scripts
+        # Checks: If command returns exit code 0
+        startupProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - cat /usr/share/nginx/html/index.html | grep "Welcome to nginx"
+          failureThreshold: 30
+          periodSeconds: 10
+          
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/conf.d
+      
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  health.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+        
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+        }
+        
+        # Health check endpoint
+        location /healthz {
+            access_log off;
+            return 200 "healthy\n";
+        }
+    }

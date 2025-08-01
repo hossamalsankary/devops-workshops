@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe-failure-handling
+  labels:
+    app: health-demo
+  annotations:
+    description: "Demonstration of probe failure handling scenarios"
+spec:
+  containers:
+  - name: web-app
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    
+    # Liveness probe with failure handling
+    # If this fails, Kubernetes will RESTART the container
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 80
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      # How long to wait for a response (timeout)
+      timeoutSeconds: 5
+      # Number of consecutive failures allowed before action
+      failureThreshold: 3
+      # Number of consecutive successes required after failure
+      successThreshold: 1
+    
+    # Readiness probe with specific failure handling
+    # If this fails, Kubernetes will STOP sending traffic to the pod
+    # but won't restart it
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 80
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      timeoutSeconds: 3
+      failureThreshold: 2
+      successThreshold: 2  # Requires 2 consecutive successful probes to be considered ready again
+    
+    # Startup probe with extended timeout for slow starting applications
+    # While this is checking, liveness and readiness probes are disabled
+    startupProbe:
+      httpGet:
+        path: /startup
+        port: 80
+      # With these settings, app has up to 5 minutes to start (30 * 10s)
+      failureThreshold: 30
+      periodSeconds: 10
+ 
+    
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "100m"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
