@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: database-backup
+spec:
+  # Schedule in Cron format
+  # This runs at 3:00 AM every day
+  schedule: "0 3 * * *"
+  
+  # Job template
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-job
+            image: postgres:14
+            command:
+            - /bin/sh
+            - -c
+            - pg_dump -h db-host -U admin mydatabase > /backup/db-$(date +%Y%m%d).sql
+            volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+          volumes:
+          - name: backup-volume
+            persistentVolumeClaim:
+              claimName: backup-pvc
+          restartPolicy: OnFailure
+  
+  # Deadline in seconds for starting the job if it misses scheduled time
+  startingDeadlineSeconds: 180
+  
+  # Number of successful finished jobs to retain
+  successfulJobsHistoryLimit: 3
+  
+  # Number of failed finished jobs to retain
+  failedJobsHistoryLimit: 1
+  
+  # Specifies how to treat concurrent executions of a job
+  # Options: Allow, Forbid, Replace
+  concurrencyPolicy: Forbid

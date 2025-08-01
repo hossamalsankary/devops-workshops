@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-configmap
+spec:
+  containers:
+  - name: app
+    image: myapp:1.0
+    ports:
+    - containerPort: 8080
+    # Mount ConfigMap as volume
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+    # Use ConfigMap as environment variables
+    env:
+    - name: APP_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: app.properties
+    - name: DB_HOST
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: database.properties
+    # Load all ConfigMap keys as environment variables
+    envFrom:
+    - configMapRef:
+        name: app-config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: app-config

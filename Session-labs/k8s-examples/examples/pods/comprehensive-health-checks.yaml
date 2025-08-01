@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: comprehensive-health-checks
+  labels:
+    app: health-demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    # Liveness Probe - Restarts container if it fails
+    livenessProbe:
+      # HTTP GET probe
+      httpGet:
+        path: /healthz
+        port: 80
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+      successThreshold: 1
+    
+    # Readiness Probe - Controls if traffic is sent to the pod
+    readinessProbe:
+      # TCP Socket probe
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      
+    # Startup Probe - Disables other probes until it succeeds
+    startupProbe:
+      # Exec command probe
+      exec:
+        command:
+        - cat
+        - /usr/share/nginx/html/index.html
+      failureThreshold: 30
+      periodSeconds: 10

@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi-calculation
+spec:
+  completions: 5       # Number of successful pod completions required
+  parallelism: 2       # Number of pods that can run in parallel
+  backoffLimit: 4      # Number of retries before marking the job as failed
+  activeDeadlineSeconds: 100  # Timeout for the job
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl:5.34
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never  # Never restart containers on failure

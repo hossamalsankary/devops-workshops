@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  app.properties: |
+    app.name=MyApp
+    app.environment=production
+    app.logging.level=INFO
+  database.properties: |
+    db.host=db.example.com
+    db.port=5432
+    db.name=myapp
+  ui-config.json: |
+    {
+      "theme": "dark",
+      "refreshInterval": 60,
+      "features": {
+        "darkMode": true,
+        "notifications": true
+      }
+    }
