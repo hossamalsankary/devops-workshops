@@ -1,8 +1,0 @@
----
-
-- name: Purge nginx package (with autoremove)
-  apt:
-    name: nginx
-    state: absent
-    purge: yes
-    autoremove: yes

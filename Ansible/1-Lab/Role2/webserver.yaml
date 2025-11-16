@@ -1,0 +1,6 @@
+- name: install htop
+  hosts: servers
+  become: true
+  
+  roles:
+    - web-server 

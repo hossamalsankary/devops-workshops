@@ -1,0 +1,32 @@
+
+    
+- name: COPY files
+  ansible.builtin.copy:
+    src: files/html5up-multiverse
+    dest: /tmp
+    owner: root
+    group: root
+    mode: '0777'
+  notify:
+    - restarted nginx 
+  when: ansible_facts['os_family'] == 'Debian'
+
+
+- name: COPY files Centos
+  ansible.builtin.copy:
+    src: files/html5up-multiverse
+    dest: /tmp
+    owner: root
+    group: root
+    mode: '0777'
+  notify:
+    -  restarted httpd 
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Debug and print outputs
+  ansible.builtin.debug:
+    var: ansible_facts['os_family']
+
+
+- name: run script for move the websites
+  ansible.builtin.script: ./files/scripts/website-handel.sh

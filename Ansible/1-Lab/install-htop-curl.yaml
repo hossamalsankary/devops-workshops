@@ -1,23 +1,25 @@
 - name: install htop
   hosts: servers
   become: true
-  vars:
+  
 
-    install_pakages_ubuntu:
-        - nano
-        - htop
-        - wget
-        - curl
-        - nginx
-        - ufw
-        
-    install_pakages_readhat:
-        - nano
-        - wget
-        - curl
-        - httpd 
+  vars:
+   install_pakages_ubuntu:
+      - nano
+      - htop
+      - wget
+      - curl
+      - nginx
+      - ufw
+      
+  install_pakages_readhat:
+      - nano
+      - wget
+      - curl
+      - httpd  
 
   tasks:
+
 
 
 # install pakages

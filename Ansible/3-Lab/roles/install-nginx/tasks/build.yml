@@ -1,7 +1,0 @@
----
-- name: Ensure latest nginx and supporting packages are installed
-  become: true
-  apt:
-    pkg: nginx
-    state: present
-

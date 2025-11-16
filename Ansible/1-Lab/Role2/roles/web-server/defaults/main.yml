@@ -1,0 +1,16 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for web-server
+install_pakages_ubuntu:
+  - nano
+  - htop
+  - wget
+  - curl
+  - nginx
+  - ufw
+  
+install_pakages_readhat:
+  - nano
+  - wget
+  - curl
+  - httpd  

@@ -1,0 +1,7 @@
+- name: Install pakages
+  ansible.builtin.apt:
+    name:  "{{ lookup('env', 'install_pakages_ubuntu') }}"
+    state: present
+  register: apt_update_result
+  notify:
+    - start nginx 

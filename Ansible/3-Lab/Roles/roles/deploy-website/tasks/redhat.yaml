@@ -1,0 +1,6 @@
+- name: Install pakage RedHat 
+  ansible.builtin.yum:
+    name: "{{ install_pakages_readhat }}"
+    state:  present
+  notify:
+    - start httpd
