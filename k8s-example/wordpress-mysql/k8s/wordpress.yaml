@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wp-config
+  namespace: wordpress
+data:
+  WORDPRESS_DB_HOST: cluster-ip-service
+  WORDPRESS_DB_USER: wordpress
+  WORDPRESS_DB_NAME: wordpress
+  
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wp-secret
+  namespace: wordpress
+type: Opaque
+data:
+  WORDPRESS_DB_PASSWORD: dVYxODUw
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: wordpress
+  labels:
+    app: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:latest
+        ports:
+          - containerPort: 80
+        envFrom:
+          - configMapRef:
+              name: wp-config
+          - secretRef:
+              name: wp-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-ip-service-wordpress
+  namespace: wordpress
+spec:
+  selector:
+    app: wordpress
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort:  80
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wordpress-ingress
+  namespace: wordpress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: wordpress.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cluster-ip-service-wordpress
+            port:
+              number: 8080

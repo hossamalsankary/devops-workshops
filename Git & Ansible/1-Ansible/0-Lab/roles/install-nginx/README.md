@@ -1,7 +1,7 @@
 # Nginx
 
-Master: [![Build Status](https://travis-ci.org/ansible-city/nginx.svg?branch=master)](https://travis-ci.org/ansible-city/nginx)  
-Develop: [![Build Status](https://travis-ci.org/ansible-city/nginx.svg?branch=develop)](https://travis-ci.org/ansible-city/nginx)
+Master: [![[e400bd1b7fa440b592a51045a79bdf26_MD5.svg]]](https://travis-ci.org/ansible-city/nginx)  
+Develop: [![[e400bd1b7fa440b592a51045a79bdf26_MD5.svg]]](https://travis-ci.org/ansible-city/nginx)
 
 * [ansible.cfg](#ansible-cfg)
 * [Installation and Dependencies](#installation-and-dependencies)

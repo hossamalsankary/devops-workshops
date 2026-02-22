@@ -1,6 +1,6 @@
 # Ansible Role: Redis
 
-[![CI](https://github.com/geerlingguy/ansible-role-php-redis/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-php-redis/actions/workflows/ci.yml)
+[![[402aec8476b245150b4cbc5e49b8d688_MD5.svg]]](https://github.com/geerlingguy/ansible-role-php-redis/actions/workflows/ci.yml)
 
 Installs [Redis](http://redis.io/) on Linux.
 

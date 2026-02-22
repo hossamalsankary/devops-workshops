@@ -1,6 +1,6 @@
 # Ansible Role: Node.js
 
-[![CI](https://github.com/geerlingguy/ansible-role-nodejs/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-nodejs/actions/workflows/ci.yml)
+[![[402aec8476b245150b4cbc5e49b8d688_MD5.svg]]](https://github.com/geerlingguy/ansible-role-nodejs/actions/workflows/ci.yml)
 
 Installs Node.js on RHEL/CentOS or Debian/Ubuntu.
 
