@@ -1,4 +1,18 @@
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pvc
+  namespace: wordpress
+spec:
+  storageClassName: "local-path" 
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi 
+---
+
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: db-config
@@ -47,6 +61,13 @@ spec:
               name: db-config
           - secretRef:
               name: db-secret
+        volumeMounts:
+          - name: db-pvc
+            mountPath: /var/lib/mysql
+      volumes:
+        - name: db-pvc
+          persistentVolumeClaim:
+            claimName: db-pvc
 
 ---
 apiVersion: v1
